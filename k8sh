@@ -63,10 +63,10 @@ k8sh_init() {
   PS_RESTORE='\[\033[0m\]'
 
   # Functional colors
-  CONTEXT_COLOR=$LRED
-  PS_CONTEXT_COLOR=$PS_LRED
-  NAMESPACE_COLOR=$LCYAN
-  PS_NAMESPACE_COLOR=$PS_LCYAN
+  CONTEXT_COLOR=$WHITE
+  PS_CONTEXT_COLOR=$PS_RESTORE
+  NAMESPACE_COLOR=$LGREEN
+  PS_NAMESPACE_COLOR=$PS_LGREEN
 
   echo ""
   echo -e "${LPURPLE}Welcome to k${LRED}8${LPURPLE}sh${RESTORE}"
@@ -124,8 +124,17 @@ k8sh_init() {
 
   reloadExtensions
 
+
   # Set up PS1 prompt
-  export PS1="($PS_CONTEXT_COLOR\$(ct)$PS_RESTORE/$PS_NAMESPACE_COLOR\$KUBECTL_NAMESPACE$PS_RESTORE) \W ${PS_LPURPLE}\$${PS_RESTORE} "
+  if [ "$(id -u)" = "0" ]; then
+    SETCOLOR_USER='\[ESC[1;31m\]'
+    SET_SEP='# '
+  else
+    SETCOLOR_USER='\[ESC[1;32m\]'
+    SET_SEP="$ "
+  fi
+
+  export PS1="${PS_CYAN}[$PS_RESTORE($PS_CONTEXT_COLOR\$(ct)$PS_RESTORE/$PS_NAMESPACE_COLOR\$KUBECTL_NAMESPACE$PS_RESTORE) ${PS_CYAN}\w]${SET_SEP}${PS_RESTORE}"
 
   echo ""
   echo -e "Context: $CONTEXT_COLOR$(ct)$RESTORE"
